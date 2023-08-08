@@ -56,18 +56,25 @@ namespace PicLearner
             listIndex++;
             if (listIndex > files.Count - 1)
             {
-                listIndex = 0;
-                MessageBox.Show($"Koniec. Poprawnych odpowiedzi: {correctAnswers}");
-                startButton.Text = "Jeszcze raz";
-                label2.Text = string.Empty;
-                pictureBox1.Image.Dispose();
-                button2.Enabled = false;
+                EndGuessing();
                 return;
             }
             pictureBox1.Image.Dispose();
             pictureBox1.Image = Image.FromFile(files[listIndex]);
             button2.Text = "Sprawdz";
             resultLabel.Text = $"{listIndex + 1}/{files.Count}";
+        }
+
+        private void EndGuessing()
+        {
+            listIndex = 0;
+            MessageBox.Show($"Koniec. Poprawnych odpowiedzi: {correctAnswers} na {files.Count} pytan.");
+            startButton.Text = "Jeszcze raz";
+            label2.Text = string.Empty;
+            pictureBox1.Image.Dispose();
+            button2.Enabled = false;
+            correctAnswers = 0;
+            return;
         }
 
         private bool IsAnswearCorrect()
@@ -89,9 +96,15 @@ namespace PicLearner
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            ShuffleList();
             pictureBox1.Image = Image.FromFile(files[listIndex]);
             resultLabel.Text = $"{listIndex + 1}/{files.Count}";
             button2.Enabled = true;
+        }
+
+        private void ShuffleList()
+        {
+            files = files.OrderBy(a => Guid.NewGuid()).ToList();
         }
 
         private void button2_Click(object sender, EventArgs e)
